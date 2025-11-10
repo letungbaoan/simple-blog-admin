@@ -1,0 +1,11 @@
+{
+  "dashboard": "Dashboard",
+  "all_posts": "All Posts",
+  "add_post": "Add New Post",
+  "switch_to_english": "English",
+  "switch_to_vietnamese": "Vietnamese",
+  "post_detail": "Post Detail",
+  "post_content": "The content of the post will be displayed here...",
+  "post": "Post",
+  "empty_posts": " Post list is empty"
+}
