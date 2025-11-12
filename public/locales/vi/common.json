@@ -9,5 +9,7 @@
   "post": "Bài viết",
   "empty_posts": " Danh sách bài viết rỗng",
   "author_label": "Tác giả",
-  "created_at_label": "Ngày tạo"
+  "created_at_label": "Ngày tạo",
+  "loading_posts": "Đang tải bài viết...",
+  "fetching_data_server": "Dữ liệu đang được tải từ Server."
 }

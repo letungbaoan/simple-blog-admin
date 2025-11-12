@@ -4,4 +4,5 @@ export type Post = {
   content: string
   author: string
   createdAt: string
+  imageUrl: string
 }

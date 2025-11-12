@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { Post } from '@/types/post.d'
 
@@ -18,21 +19,27 @@ export default function PostsListClient({ posts }: PostsPageProps) {
       {posts.length === 0 ? (
         <p className='italic text-gray-600'>{t('empty_posts')}</p>
       ) : (
-        <div className='flex flex-col gap-3'>
+        <div className='flex flex-col gap-4'>
           {posts.map((post) => (
             <div
               key={post.id}
-              className='block rounded-lg bg-white p-4 shadow-md transition duration-300 hover:shadow-lg'
+              className='flex items-start rounded-lg bg-white p-4 shadow-md transition duration-300 hover:shadow-lg'
             >
-              <Link href={`/dashboard/posts/${post.id}`} className='block text-black'>
-                <h2 className='text-xl font-semibold text-indigo-600 transition duration-300 hover:text-indigo-800'>
-                  {post.title}
-                </h2>
-              </Link>
-              <p className='mt-1 text-sm text-gray-500'>
-                {t('author_label')}: {post.author} | {t('created_at_label')}:{' '}
-                {new Date(post.createdAt).toLocaleDateString()}
-              </p>
+              <div className='mr-4 shrink-0'>
+                <Image src={post.imageUrl} alt={post.title} width={80} height={80} className='rounded object-cover' />
+              </div>
+
+              <div className='flex-1'>
+                <Link href={`/dashboard/posts/${post.id}`} className='block text-black'>
+                  <h2 className='text-xl font-semibold text-indigo-600 transition duration-300 hover:text-indigo-800'>
+                    {post.title}
+                  </h2>
+                </Link>
+                <p className='mt-1 text-sm text-gray-500'>
+                  {t('author_label')}: {post.author} | {t('created_at_label')}:{' '}
+                  {new Date(post.createdAt).toLocaleDateString()}
+                </p>
+              </div>
             </div>
           ))}
         </div>
