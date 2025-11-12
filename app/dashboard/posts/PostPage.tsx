@@ -2,35 +2,38 @@
 
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
-
-interface Post {
-  id: string
-  title: string
-}
+import { Post } from '@/types/post.d'
 
 interface PostsPageProps {
   posts: Post[]
 }
 
-export default function PostsPage({ posts }: PostsPageProps) {
+export default function PostsListClient({ posts }: PostsPageProps) {
   const { t } = useTranslation()
 
   return (
     <div>
-      <h1 className='mb-4 text-2xl font-bold text-black'>{t('all_posts')}</h1>
+      <h1 className='mb-6 text-3xl font-bold text-gray-800'>{t('all_posts')}</h1>
 
       {posts.length === 0 ? (
-        <p className='italic text-gray-600'>{t('empty_posts') || 'Không có bài viết nào.'}</p>
+        <p className='italic text-gray-600'>{t('empty_posts')}</p>
       ) : (
         <div className='flex flex-col gap-3'>
           {posts.map((post) => (
-            <Link
+            <div
               key={post.id}
-              href={`/dashboard/posts/${post.id}`}
-              className='block rounded bg-white p-4 text-black shadow hover:bg-gray-50'
+              className='block rounded-lg bg-white p-4 shadow-md transition duration-300 hover:shadow-lg'
             >
-              {t('post')} {post.id}: {post.title}
-            </Link>
+              <Link href={`/dashboard/posts/${post.id}`} className='block text-black'>
+                <h2 className='text-xl font-semibold text-indigo-600 transition duration-300 hover:text-indigo-800'>
+                  {post.title}
+                </h2>
+              </Link>
+              <p className='mt-1 text-sm text-gray-500'>
+                {t('author_label')}: {post.author} | {t('created_at_label')}:{' '}
+                {new Date(post.createdAt).toLocaleDateString()}
+              </p>
+            </div>
           ))}
         </div>
       )}

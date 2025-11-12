@@ -1,19 +1,29 @@
-'use client'
+import { Post } from '@/types/post.d'
+import PostDetailClient from './PostDetailClient'
+import { notFound } from 'next/navigation'
 
-import { useParams } from 'next/navigation'
-import { useTranslation } from 'react-i18next'
+async function getPostDetail(postId: string): Promise<Post> {
+  const res = await fetch('http://localhost:3000/api/posts', {
+    next: { revalidate: 60 }
+  })
 
-export default function PostDetailPage() {
-  const params = useParams()
-  const { postId } = params
-  const { t } = useTranslation()
+  if (!res.ok) {
+    throw new Error('Failed to fetch posts list')
+  }
 
-  return (
-    <div>
-      <h1 className='mb-4 text-2xl font-bold text-black'>
-        {t('post_detail')} {postId}
-      </h1>
-      <p className='text-black'>{t('post_content')}</p>
-    </div>
-  )
+  const posts: Post[] = await res.json()
+  const post = posts.find((p) => p.id === postId)
+
+  if (!post) {
+    notFound()
+  }
+
+  return post
+}
+
+export default async function PostDetailPage({ params }: { params: Promise<{ postId: string }> }) {
+  const { postId } = await params
+  const post = await getPostDetail(postId)
+
+  return <PostDetailClient post={post} />
 }

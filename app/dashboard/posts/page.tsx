@@ -1,11 +1,20 @@
-import PostsPage from './PostPage'
+import { Post } from '@/types/post'
+import PostsListClient from './PostPage'
 
-export default function Page() {
-  const postsData = [
-    { id: '1', title: 'Bài viết 1' },
-    { id: '2', title: 'Bài viết 2' },
-    { id: '3', title: 'Bài viết 3' }
-  ]
+async function getPosts(): Promise<Post[]> {
+  const res = await fetch('http://localhost:3000/api/posts', {
+    next: { revalidate: 60 }
+  })
 
-  return <PostsPage posts={postsData} />
+  if (!res.ok) {
+    throw new Error('Failed to fetch posts')
+  }
+
+  return res.json()
+}
+
+export default async function Page() {
+  const postsData = await getPosts()
+
+  return <PostsListClient posts={postsData} />
 }

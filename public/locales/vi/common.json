@@ -7,5 +7,7 @@
   "post_detail": "Chi tiết bài viết",
   "post_content": "Nội dung bài viết sẽ hiển thị ở đây...",
   "post": "Bài viết",
-  "empty_posts": " Danh sách bài viết rỗng"
+  "empty_posts": " Danh sách bài viết rỗng",
+  "author_label": "Tác giả",
+  "created_at_label": "Ngày tạo"
 }
