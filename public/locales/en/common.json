@@ -7,5 +7,7 @@
   "post_detail": "Post Detail",
   "post_content": "The content of the post will be displayed here...",
   "post": "Post",
-  "empty_posts": " Post list is empty"
+  "empty_posts": " Post list is empty",
+  "author_label": "Author",
+  "created_at_label": "Created at"
 }
