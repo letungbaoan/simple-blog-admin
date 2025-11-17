@@ -9,5 +9,7 @@
   "post": "Post",
   "empty_posts": " Post list is empty",
   "author_label": "Author",
-  "created_at_label": "Created at"
+  "created_at_label": "Created at",
+  "loading_posts": "Loading posts",
+  "fetching_data_server": "Fetching data from server"
 }
