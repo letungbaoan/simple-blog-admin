@@ -1,24 +1,22 @@
 import { Post } from '@/types/post.d'
 import PostDetailClient from './PostDetailClient'
 import { notFound } from 'next/navigation'
+import { API_ENDPOINTS } from '@/constants/api'
 
 async function getPostDetail(postId: string): Promise<Post> {
-  const res = await fetch('http://localhost:3000/api/posts', {
-    next: { revalidate: 60 }
+  const res = await fetch(API_ENDPOINTS.POST_DETAIL(postId), {
+    cache: 'no-store'
   })
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch posts list')
-  }
-
-  const posts: Post[] = await res.json()
-  const post = posts.find((p) => p.id === postId)
-
-  if (!post) {
+  if (res.status === 404) {
     notFound()
   }
 
-  return post
+  if (!res.ok) {
+    throw new Error('Failed to fetch post detail')
+  }
+
+  return res.json()
 }
 
 export default async function PostDetailPage({ params }: { params: Promise<{ postId: string }> }) {
