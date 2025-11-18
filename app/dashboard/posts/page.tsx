@@ -1,9 +1,10 @@
 import { Post } from '@/types/post'
 import PostsListClient from './PostPage'
+import { API_ENDPOINTS } from '@/constants/api'
 
 async function getPosts(): Promise<Post[]> {
-  const res = await fetch('http://localhost:3000/api/posts', {
-    next: { revalidate: 60 }
+  const res = await fetch(API_ENDPOINTS.POSTS, {
+    cache: 'no-store'
   })
 
   if (!res.ok) {

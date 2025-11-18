@@ -1,42 +1,88 @@
 import { NextResponse } from 'next/server'
 import { Post } from '@/types/post.d'
+import { revalidatePath } from 'next/cache'
+import { API_ENDPOINTS } from '@/constants/api'
 
-const mockPosts: Post[] = [
-  {
-    id: 'hanh-trinh-nau-an',
-    title: 'Hành trình học nấu ăn: Từ Zero đến Đầu bếp',
-    content:
-      'Bắt đầu từ một người không biết gì ngoài mì gói, tôi đã dần khám phá ra niềm vui trong căn bếp. Bí quyết là sự kiên nhẫn và không sợ thất bại. Món đầu tiên tôi nấu thành công là món phở cuốn, đơn giản mà tuyệt vời.',
-    author: 'Gia Đình',
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-    imageUrl: 'https://cdn.pixabay.com/photo/2017/06/05/10/15/landscape-2373651_1280.jpg'
-  },
-  {
-    id: 'meo-du-lich',
-    title: '5 mẹo nhỏ giúp chuyến du lịch tiết kiệm và thú vị hơn',
-    content:
-      'Đừng bao giờ đặt vé vào phút chót! Hãy tận dụng các ứng dụng so sánh giá, đi du lịch vào mùa thấp điểm, và đặc biệt là hãy thử trải nghiệm phương tiện giao thông công cộng địa phương để cảm nhận văn hóa.',
-    author: 'Phượt Thủ',
-    createdAt: new Date().toISOString(),
-    imageUrl: 'https://cdn.pixabay.com/photo/2017/06/05/10/15/landscape-2373651_1280.jpg'
-  },
-  {
-    id: 'phat-trien-ban-than',
-    title: 'Bí quyết đọc sách hiệu quả: Tăng tốc độ và ghi nhớ lâu hơn',
-    content:
-      'Thay vì chỉ đọc lướt, hãy áp dụng kỹ thuật Skimming và Scanning trước khi đi sâu. Luôn ghi chép lại các ý chính bằng tay. Việc này giúp não bộ xử lý thông tin và củng cố trí nhớ một cách đáng kể.',
-    author: 'Quản Lý',
-    createdAt: new Date(Date.now() - 172800000).toISOString(),
-    imageUrl: 'https://cdn.pixabay.com/photo/2017/06/05/10/15/landscape-2373651_1280.jpg'
-  }
-]
-
+// GET — lấy toàn bộ posts từ JSON Server
 export async function GET() {
-  await new Promise((resolve) => setTimeout(resolve, 500))
+  try {
+    const res = await fetch(API_ENDPOINTS.POSTS, { cache: 'no-store' })
 
-  return NextResponse.json(mockPosts)
+    if (!res.ok) {
+      return NextResponse.json({ message: 'Failed to fetch posts' }, { status: 500 })
+    }
+
+    const posts: Post[] = await res.json()
+    return NextResponse.json(posts)
+  } catch (error) {
+    return NextResponse.json({ message: 'Server error', error }, { status: 500 })
+  }
 }
 
-export function getMockPost(postId: string): Post | undefined {
-  return mockPosts.find((post) => post.id === postId)
+// POST — tạo bài viết mới
+export async function POST(request: Request) {
+  try {
+    const newPostData = await request.json()
+
+    if (!newPostData.title || !newPostData.content || !newPostData.author) {
+      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
+    }
+
+    const newId = newPostData.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-*|-*$/g, '')
+
+    const newPost: Post = {
+      id: newId,
+      ...newPostData,
+      createdAt: new Date().toISOString()
+    }
+
+    const res = await fetch(API_ENDPOINTS.POSTS, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newPost)
+    })
+
+    if (!res.ok) {
+      return NextResponse.json({ message: 'Failed to create post' }, { status: 500 })
+    }
+
+    revalidatePath('/dashboard/posts')
+    revalidatePath(`/dashboard/posts/${newPost.id}`)
+
+    return NextResponse.json(newPost, { status: 201 })
+  } catch (error) {
+    return NextResponse.json({ message: 'Error processing request', error }, { status: 500 })
+  }
+}
+
+// PUT — update bài viết
+export async function PUT(request: Request) {
+  try {
+    const updatedPost = await request.json()
+
+    if (!updatedPost.id) {
+      return NextResponse.json({ message: 'Post ID is required for update' }, { status: 400 })
+    }
+
+    const res = await fetch(API_ENDPOINTS.POST_DETAIL(updatedPost.id), {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedPost)
+    })
+
+    if (!res.ok) {
+      return NextResponse.json({ message: 'Failed to update post' }, { status: 500 })
+    }
+
+    const result = await res.json()
+
+    revalidatePath(`/dashboard/posts/${updatedPost.id}`)
+
+    return NextResponse.json(result, { status: 200 })
+  } catch (error) {
+    return NextResponse.json({ message: 'Error processing request', error }, { status: 500 })
+  }
 }

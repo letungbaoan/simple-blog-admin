@@ -2,7 +2,9 @@
 
 import { useTranslation } from 'react-i18next'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Post } from '@/types/post.d'
+import { PATHS } from '@/constants/paths'
 
 interface PostDetailClientProps {
   post: Post
@@ -24,10 +26,18 @@ export default function PostDetailClient({ post }: PostDetailClientProps) {
         />
       </div>
 
-      <h1 className='mb-4 text-4xl font-extrabold text-gray-800'>{post.title}</h1>
+      <div className='mb-4 flex items-center justify-between'>
+        <h1 className='text-4xl font-extrabold text-gray-800'>{post.title}</h1>
+        <Link
+          href={PATHS.DASHBOARD.POST_DETAIL(post.id) + '/edit'}
+          className='rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700'
+        >
+          {t('edit_post')}
+        </Link>
+      </div>
 
       <p className='mb-4 border-b pb-4 text-base text-gray-600'>
-        {t('author_label')}: <span className='font-medium text-gray-700'>{post.author}</span> |{t('created_at_label')}:{' '}
+        {t('author_label')}: <span className='font-medium text-gray-700'>{post.author}</span> | {t('created_at_label')}:{' '}
         <span className='font-medium text-gray-700'>{new Date(post.createdAt).toLocaleDateString()}</span>
       </p>
 
