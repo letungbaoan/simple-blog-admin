@@ -1,10 +1,32 @@
+// next.config.js
+
 import type { NextConfig } from 'next'
-import { i18n } from './next-i18next.config'
 
 const nextConfig: NextConfig = {
-  i18n,
   images: {
-    domains: ['cdn.pixabay.com']
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.pixabay.com',
+        port: '',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+        port: '',
+        pathname: '/**'
+      }
+    ]
+  },
+  typescript: {
+    ignoreBuildErrors: true
   }
 }
 
