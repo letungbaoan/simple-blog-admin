@@ -1,3 +1,4 @@
+import React from 'react'
 import PostForm from '@/app/components/PostForm'
 import { Post } from '@/types/post.d'
 import { notFound } from 'next/navigation'

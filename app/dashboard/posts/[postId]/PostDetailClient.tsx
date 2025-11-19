@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Image from 'next/image'
 import Link from 'next/link'

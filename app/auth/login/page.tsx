@@ -1,6 +1,7 @@
 'use client'
 
 import '@/i18n/client'
+import React from 'react'
 import { PATHS } from '@/constants/paths'
 import { signIn } from 'next-auth/react'
 import { useTranslation } from 'next-i18next'

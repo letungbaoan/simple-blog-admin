@@ -16,7 +16,7 @@ async function requireAuth() {
 // GET — lấy toàn bộ posts
 export async function GET() {
   const auth = await requireAuth()
-  if (!auth) return auth
+  if ('status' in auth && typeof auth.json === 'function') return auth
 
   try {
     const res = await fetch(API_ENDPOINTS.POSTS, { cache: 'no-store' })
@@ -31,7 +31,7 @@ export async function GET() {
 // POST — tạo bài viết mới
 export async function POST(request: Request) {
   const auth = await requireAuth()
-  if (!auth) return auth
+  if ('status' in auth && typeof auth.json === 'function') return auth
 
   try {
     const newPostData = await request.json()
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
 // PUT — update bài viết
 export async function PUT(request: Request) {
   const auth = await requireAuth()
-  if (!auth) return auth
+  if ('status' in auth && typeof auth.json === 'function') return auth
 
   try {
     const updatedPost = await request.json()

@@ -1,6 +1,7 @@
 import { Post } from '@/types/post'
 import PostsListClient from './PostPage'
 import { API_ENDPOINTS } from '@/constants/api'
+import React from 'react'
 
 async function getPosts(): Promise<Post[]> {
   const res = await fetch(API_ENDPOINTS.POSTS, {
