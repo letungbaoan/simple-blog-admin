@@ -1,17 +1,26 @@
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]/route'
 import { NextResponse } from 'next/server'
 import { Post } from '@/types/post.d'
 import { revalidatePath } from 'next/cache'
 import { API_ENDPOINTS } from '@/constants/api'
 
-// GET — lấy toàn bộ posts từ JSON Server
+async function requireAuth() {
+  const session = await getServerSession(authOptions)
+  if (!session) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+  }
+  return session
+}
+
+// GET — lấy toàn bộ posts
 export async function GET() {
+  const auth = await requireAuth()
+  if (!auth) return auth
+
   try {
     const res = await fetch(API_ENDPOINTS.POSTS, { cache: 'no-store' })
-
-    if (!res.ok) {
-      return NextResponse.json({ message: 'Failed to fetch posts' }, { status: 500 })
-    }
-
+    if (!res.ok) return NextResponse.json({ message: 'Failed to fetch posts' }, { status: 500 })
     const posts: Post[] = await res.json()
     return NextResponse.json(posts)
   } catch (error) {
@@ -21,9 +30,11 @@ export async function GET() {
 
 // POST — tạo bài viết mới
 export async function POST(request: Request) {
+  const auth = await requireAuth()
+  if (!auth) return auth
+
   try {
     const newPostData = await request.json()
-
     if (!newPostData.title || !newPostData.content || !newPostData.author) {
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
     }
@@ -60,9 +71,11 @@ export async function POST(request: Request) {
 
 // PUT — update bài viết
 export async function PUT(request: Request) {
+  const auth = await requireAuth()
+  if (!auth) return auth
+
   try {
     const updatedPost = await request.json()
-
     if (!updatedPost.id) {
       return NextResponse.json({ message: 'Post ID is required for update' }, { status: 400 })
     }
@@ -73,12 +86,9 @@ export async function PUT(request: Request) {
       body: JSON.stringify(updatedPost)
     })
 
-    if (!res.ok) {
-      return NextResponse.json({ message: 'Failed to update post' }, { status: 500 })
-    }
+    if (!res.ok) return NextResponse.json({ message: 'Failed to update post' }, { status: 500 })
 
     const result = await res.json()
-
     revalidatePath(`/dashboard/posts/${updatedPost.id}`)
 
     return NextResponse.json(result, { status: 200 })

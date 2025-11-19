@@ -37,5 +37,6 @@
   "post_title_placeholder": "Nhập tiêu đề bài viết...",
   "post_content_placeholder": "Nhập nội dung chi tiết...",
   "post_author_placeholder": "Tên tác giả...",
-  "post_image_url_placeholder": "http://example.com/image.jpg"
+  "post_image_url_placeholder": "http://example.com/image.jpg",
+  "logout": "Đăng xuất"
 }
