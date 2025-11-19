@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
 import { Post } from '@/types/post.d'
 import { PATHS } from '@/constants/paths'
+import React from 'react'
 
 interface PostFormProps {
   initialData?: Post

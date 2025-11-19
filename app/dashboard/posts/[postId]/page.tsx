@@ -1,3 +1,4 @@
+import React from 'react'
 import { Post } from '@/types/post.d'
 import PostDetailClient from './PostDetailClient'
 import { notFound } from 'next/navigation'

@@ -1,7 +1,8 @@
 'use client'
 
 import { PATHS } from '@/constants/paths'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'react-i18next'
+import React from 'react'
 
 export default function RegisterPage() {
   const { t } = useTranslation('auth')
